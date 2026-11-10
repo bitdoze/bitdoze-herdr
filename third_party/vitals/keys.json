@@ -1,0 +1,4 @@
+{
+  "global": { "cmd-alt-v": "mod.open:vitals" },
+  "mod:vitals": { "escape": "vitals.close" }
+}

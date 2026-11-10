@@ -1,0 +1,11 @@
+{
+  "agents": {
+    "claude": { "model_flag": "--model", "models": ["opus", "sonnet", "fable"] },
+    "codex": { "model_flag": "--model", "models": [] },
+    "grok": { "model_flag": "--model", "models": [] },
+    "antigravity": { "model_flag": "--model", "models": [] },
+    "devin": { "name": "Devin", "run": ["devin"], "model_flag": "--model", "models": [] }
+  },
+  "max_running": 4,
+  "worktree": true
+}

@@ -1,0 +1,8 @@
+{
+  "global": {
+    "cmd-alt-t": "mod.open:herd-tasks"
+  },
+  "mod:herd-tasks": {
+    "escape": "herd-tasks.close"
+  }
+}

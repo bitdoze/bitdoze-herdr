@@ -1,0 +1,8 @@
+{
+  "global": {
+    "cmd-alt-b": "mod.open:herd-bots"
+  },
+  "mod:herd-bots": {
+    "escape": "herd-bots.close"
+  }
+}

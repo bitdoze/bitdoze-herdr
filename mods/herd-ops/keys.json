@@ -1,0 +1,8 @@
+{
+  "global": {
+    "cmd-alt-o": "mod.open:herd-ops"
+  },
+  "mod:herd-ops": {
+    "escape": "herd-ops.close"
+  }
+}

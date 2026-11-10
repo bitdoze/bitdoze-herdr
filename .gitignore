@@ -1,0 +1,27 @@
+__pycache__/
+*.pyc
+.DS_Store
+
+# mod/app error logs (layout.error, keys.error, <mod>.error)
+*.error
+
+# user config written next to the mod files (e.g. via a --link install),
+# or copied in by hand — the repo ships *.default.json instead
+bots.json
+sites.json
+tasks.json
+
+# herdr-app home state files — never part of a package
+shared.json
+shared.json.corrupt-*
+seen.json
+installed.json
+view.json
+window.json
+windows.json
+data/
+
+# written by `herdr-app check` into every mod folder it inspects
+gpui-kit.d.ts
+herdr.d.ts
+jsconfig.json

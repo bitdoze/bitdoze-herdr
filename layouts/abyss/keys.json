@@ -1,0 +1,20 @@
+{
+  "global": {
+    "cmd-alt-t": "mod.open:herd-tasks",
+    "cmd-alt-b": "mod.open:herd-bots",
+    "cmd-alt-o": "mod.open:herd-ops",
+    "cmd-alt-u": "mod.open:herd-usage"
+  },
+  "mod:herd-tasks": {
+    "escape": "herd-tasks.close"
+  },
+  "mod:herd-bots": {
+    "escape": "herd-bots.close"
+  },
+  "mod:herd-ops": {
+    "escape": "herd-ops.close"
+  },
+  "mod:herd-usage": {
+    "escape": "herd-usage.close"
+  }
+}

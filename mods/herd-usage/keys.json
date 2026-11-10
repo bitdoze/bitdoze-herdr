@@ -1,0 +1,8 @@
+{
+  "global": {
+    "cmd-alt-u": "mod.open:herd-usage"
+  },
+  "mod:herd-usage": {
+    "escape": "herd-usage.close"
+  }
+}

@@ -1,0 +1,1 @@
+{ "place": "none", "title": "Bots", "overlay": { "kind": "window", "key": "herd-bots", "keep": true, "width": 430, "height": 620 } }
