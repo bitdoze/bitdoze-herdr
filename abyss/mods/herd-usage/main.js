@@ -108,15 +108,18 @@ export default class HerdUsage extends View {
       for (;;) {
         const c = await nextCommand();
         // No dedupe: every command here is instance-local state (a range
-        // chip) or a shared flag bump the loader coalesces anyway.
-        if (c === "refresh") want(cx, true);
-        // Every mount sees "close"; only the kept-window mount (the one with
-        // props().overlay) acts — panels/panes no-op.
-        else if (c === "close") { if (props().overlay) closeOverlay(props().overlay); }
-        else if (c.startsWith("range:")) {
-          this.range = c.slice(6);
-          localStorage.setItem("usage.range", this.range);
-        }
+        // chip) or a shared flag bump the loader coalesces anyway. A sync
+        // throw would reject this spawn and kill the loop — swallow it.
+        try {
+          if (c === "refresh") want(cx, true);
+          // Every mount sees "close"; only the kept-window mount (the one with
+          // props().overlay) acts — panels/panes no-op.
+          else if (c === "close") { if (props().overlay) closeOverlay(props().overlay); }
+          else if (c.startsWith("range:")) {
+            this.range = c.slice(6);
+            localStorage.setItem("usage.range", this.range);
+          }
+        } catch {}
         cx.notify();
       }
     });

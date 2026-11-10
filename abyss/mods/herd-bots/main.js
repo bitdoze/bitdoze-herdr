@@ -190,34 +190,41 @@ export default class HerdBots extends View {
         for (;;) {
           const c = await nextCommand();
           const once = c.startsWith("ask:");
-          if (once) {
-            if (seenCmds.has(c) && Date.now() - seenCmds.get(c) < 2000) continue;
-            seenCmds.set(c, Date.now());
-            const bot = c.slice(4);
-            if (data().bots.some(b => b.id === bot))
-              openOverlay({ mod: "herd-bots", kind: "dialog", width: 430, height: 620, props: { dialog: true, bot } });
-          } else if (c === "rooms" || c === "bots") {
-            run("layout.select", { stack: "panel-body", child: "herd-bots" });
-            run("layout.show", { id: "panel" });
-            localStorage.setItem("bots.view", c);
-          } else if (c.startsWith("room:")) {
-            const r = c.slice(5);
-            if (ROOM_RE.test(r)) { setShared(SEL_ROOM, r); this.room = null; this.feedCount = -1; this.lastLoad = 0; localStorage.setItem("bots.view", "rooms"); }
-          } else if (c.startsWith("delroom:")) {
-            // Drop an extra room (one with no log yet). Logged rooms stay:
-            // deleting history is a filesystem op, not a view op.
-            const r = c.slice(8);
-            if (ROOM_RE.test(r)) {
-              const extra = (shared(EXTRA_ROOMS) ?? []).filter(x => x !== r);
-              if (extra.length !== (shared(EXTRA_ROOMS) ?? []).length) setShared(EXTRA_ROOMS, extra);
-              if ((shared(SEL_ROOM) ?? "general") === r) setShared(SEL_ROOM, this.roomList()[0] ?? "general");
+          // A sync throw here would reject this spawn and kill the command
+          // loop for the mount's whole lifetime — swallow per command, and
+          // un-mark so a surviving mount can still handle it.
+          try {
+            if (once) {
+              if (seenCmds.has(c) && Date.now() - seenCmds.get(c) < 2000) continue;
+              seenCmds.set(c, Date.now());
+              const bot = c.slice(4);
+              if (data().bots.some(b => b.id === bot))
+                openOverlay({ mod: "herd-bots", kind: "dialog", width: 430, height: 620, props: { dialog: true, bot } });
+            } else if (c === "rooms" || c === "bots") {
+              run("layout.select", { stack: "panel-body", child: "herd-bots" });
+              run("layout.show", { id: "panel" });
+              localStorage.setItem("bots.view", c);
+            } else if (c.startsWith("room:")) {
+              const r = c.slice(5);
+              if (ROOM_RE.test(r)) { setShared(SEL_ROOM, r); this.room = null; this.feedCount = -1; this.lastLoad = 0; localStorage.setItem("bots.view", "rooms"); }
+            } else if (c.startsWith("delroom:")) {
+              // Drop an extra room (one with no log yet). Logged rooms stay:
+              // deleting history is a filesystem op, not a view op.
+              const r = c.slice(8);
+              if (ROOM_RE.test(r)) {
+                const extra = (shared(EXTRA_ROOMS) ?? []).filter(x => x !== r);
+                if (extra.length !== (shared(EXTRA_ROOMS) ?? []).length) setShared(EXTRA_ROOMS, extra);
+                if ((shared(SEL_ROOM) ?? "general") === r) setShared(SEL_ROOM, this.roomList()[0] ?? "general");
+              }
+            } else if (c === "hist") {
+              this.hist = !this.hist;
+            } else if (c === "close") {
+              // Not deduped: every mount sees it; only the kept-window mount
+              // (the one with props().overlay) closes itself.
+              if (props().overlay) closeOverlay(props().overlay);
             }
-          } else if (c === "hist") {
-            this.hist = !this.hist;
-          } else if (c === "close") {
-            // Not deduped: every mount sees it; only the kept-window mount
-            // (the one with props().overlay) closes itself.
-            if (props().overlay) closeOverlay(props().overlay);
+          } catch {
+            if (once) seenCmds.delete(c);
           }
           cx.notify();
         }

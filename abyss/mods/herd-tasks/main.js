@@ -162,20 +162,27 @@ export default class HerdTasks extends View {
           if (seenCmds.has(c) && Date.now() - seenCmds.get(c) < 2000) continue;
           seenCmds.set(c, Date.now());
         }
-        if (c === "new") {
-          run("layout.select", { stack: "panel-body", child: "herd-tasks" });
-          run("layout.show", { id: "panel" });
-          this.composer.focus();
-        } else if (c === "track") {
-          this.trackCurrent();
-        } else if (/^(start|open|review|accept|discard|rebase|reopen|remove):/.test(c)) {
-          const [cmd, id] = c.split(":", 2);
-          const t = tasks()[id];
-          if (t) this.action(cx, t, cmd);
-        } else if (c === "close") {
-          // Not deduped: every mount sees it; only the kept-window mount
-          // (the one with props().overlay) closes itself.
-          if (props().overlay) closeOverlay(props().overlay);
+        // A sync throw here would reject this spawn and kill the command
+        // loop for the mount's whole lifetime — swallow per command, and
+        // un-mark so a surviving mount can still handle it.
+        try {
+          if (c === "new") {
+            run("layout.select", { stack: "panel-body", child: "herd-tasks" });
+            run("layout.show", { id: "panel" });
+            this.composer.focus();
+          } else if (c === "track") {
+            this.trackCurrent();
+          } else if (/^(start|open|review|accept|discard|rebase|reopen|remove):/.test(c)) {
+            const [cmd, id] = c.split(":", 2);
+            const t = tasks()[id];
+            if (t) this.action(cx, t, cmd);
+          } else if (c === "close") {
+            // Not deduped: every mount sees it; only the kept-window mount
+            // (the one with props().overlay) closes itself.
+            if (props().overlay) closeOverlay(props().overlay);
+          }
+        } catch {
+          if (once) seenCmds.delete(c);
         }
         cx.notify();
       }

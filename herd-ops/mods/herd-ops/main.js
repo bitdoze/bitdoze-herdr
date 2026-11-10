@@ -63,7 +63,8 @@ export default class HerdOps extends View {
     cx.spawn(async () => {
       for (;;) {
         const c = await nextCommand();
-        if (c === "close" && props().overlay) closeOverlay(props().overlay);
+        // A sync throw would reject this spawn and kill the loop — swallow it.
+        try { if (c === "close" && props().overlay) closeOverlay(props().overlay); } catch {}
         cx.notify();
       }
     });
