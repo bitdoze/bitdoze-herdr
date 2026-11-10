@@ -424,6 +424,18 @@ export default class HerdTasks extends View {
   }
 
   render(cx) {
+    // A throw here bricks the mount (frozen frame, dead clicks) — show an
+    // error strip instead so a transient bad state can't take it down.
+    try {
+      return this.renderBody(cx);
+    } catch (e) {
+      const t = theme();
+      return div().size_full().p(10).text_size(11).text_color(t.muted)
+        .child(`herd-tasks render error: ${e}`);
+    }
+  }
+
+  renderBody(cx) {
     const t = theme();
     const p = props() ?? {};
     if (p.confirm) return this.confirmDialog(t);

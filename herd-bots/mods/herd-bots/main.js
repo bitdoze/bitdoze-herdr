@@ -542,7 +542,10 @@ export default class HerdBots extends View {
         notes.push(h_flex().gap(5).items_center().flex_none()
           .child(div().text_color(t.dim).child(`not delivered to @${m.bot}: ${m.reason}`))
           .when(botsById.has(m.bot), el => el.child(
-            div().text_color(t.accent).underline().child("start"))));
+            div().text_color(t.accent).underline().cursor_pointer()
+              .hover(s => s.text_color(t.foreground)).tooltip(`Start ${m.bot} in #${room}`)
+              .on_click(() => openOverlay({ mod: "herd-bots", kind: "dialog", width: 430, height: 500, props: { dialog: true, bot: m.bot } }))
+              .child("start"))));
       }
       if (l.held === "rate") notes.push(div().text_color(t.dim).child("held: too many bot messages this minute"));
       return h_flex().flex_none().px(12).py(5).gap(8).items_start()
@@ -628,6 +631,18 @@ export default class HerdBots extends View {
   }
 
   render(cx) {
+    // A throw here bricks the mount (frozen frame, dead clicks) — show an
+    // error strip instead so a transient bad state can't take it down.
+    try {
+      return this.renderBody(cx);
+    } catch (e) {
+      const t = theme();
+      return div().size_full().p(10).text_size(11).text_color(t.muted)
+        .child(`herd-bots render error: ${e}`);
+    }
+  }
+
+  renderBody(cx) {
     const t = theme();
     const p = props() ?? {};
     ensureData(cx);
