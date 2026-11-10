@@ -44,7 +44,7 @@ done
 step "python tests" bash -c '
 set -e
 tmp=$(mktemp -d); trap "rm -rf $tmp" EXIT
-for d in mods/*/tests; do
+for d in herd-*/tests; do
   compgen -G "$d/test_*.py" >/dev/null || continue
   PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX="$tmp" python3 -m unittest discover -s "$d" -p "test_*.py" || exit 1
   [ -x /usr/bin/python3 ] && PYTHONPYCACHEPREFIX="$tmp" /usr/bin/python3 -B -m unittest discover -s "$d" -p "test_*.py" || exit 1
@@ -53,14 +53,14 @@ done
 
 step "node tests" bash -c '
 if ! command -v node >/dev/null; then echo "SKIP node tests (no node)"; exit 0; fi
-node --test mods/*/tests/*.test.mjs
+if compgen -G "herd-*/tests/*.test.mjs" >/dev/null; then node --test herd-*/tests/*.test.mjs; else echo "no node tests"; fi
 '
 
 step "sh syntax" bash -c 'find . -name "*.sh" -not -path "./.git/*" | while read -r f; do bash -n "$f" || exit 1; done; bash -n install.sh'
 
 step "herdr-app check" bash -c '
 set -e
-for d in mods/*/mods/*/ layouts/abyss/mods/*/; do
+for d in herd-*/mods/*/ abyss/mods/*/; do
   [ -f "$d/main.js" ] || continue
   herdr-app check "$d" >/dev/null || { echo "herdr-app check failed: $d"; exit 1; }
 done

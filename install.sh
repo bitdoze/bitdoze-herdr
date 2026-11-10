@@ -25,7 +25,7 @@ done
 
 [ -d "$APP" ] || { echo "no herdr-app home at $APP — run the app once first"; exit 1; }
 
-# Regenerate layouts/abyss/mods/* from the canonical mod packages.
+# Regenerate abyss/mods/* from the canonical mod packages.
 [ "$DRY" -eq 1 ] || bash "$HERE/scripts/sync.sh" >/dev/null
 
 say() { if [ "$DRY" -eq 1 ]; then echo "[dry-run] $*"; else echo "$*"; fi; }
@@ -43,18 +43,18 @@ put() { # put <src> <dst-dir>  — copy (or symlink) a file/dir
   fi
 }
 
-put "$HERE/layouts/abyss/layouts/abyss.json" "$APP/layouts"
-put "$HERE/layouts/abyss/layouts/abyss.svg" "$APP/layouts"
-put "$HERE/layouts/abyss/themes/abyss.json" "$APP/themes"
+put "$HERE/abyss/layouts/abyss.json" "$APP/layouts"
+put "$HERE/abyss/layouts/abyss.svg" "$APP/layouts"
+put "$HERE/abyss/themes/abyss.json" "$APP/themes"
 if [ "$LINK" -eq 1 ]; then
   # Link canonical sources, not the generated copies: sync.sh rm -rf's the
   # generated folders, which would destroy user files in a linked folder.
-  for mod in "$HERE"/layouts/abyss/mods/abyss-*/ "$HERE"/mods/*/mods/*/; do
+  for mod in "$HERE"/abyss/mods/abyss-*/ "$HERE"/herd-*/mods/*/; do
     [ -f "$mod/main.js" ] || continue
     put "${mod%/}" "$APP/mods"
   done
 else
-  for mod in "$HERE"/layouts/abyss/mods/*/; do
+  for mod in "$HERE"/abyss/mods/*/; do
     [ -f "$mod/main.js" ] || continue
     put "${mod%/}" "$APP/mods"
   done
@@ -64,7 +64,7 @@ if [ "$VITALS" -eq 1 ]; then
 fi
 
 # Merge keys add-only: never replace a chord the person already binds.
-FRAGS=("$HERE/layouts/abyss/keys.json")
+FRAGS=("$HERE/abyss/keys.json")
 [ "$VITALS" -eq 1 ] && FRAGS+=("$HERE/third_party/vitals/keys.json")
 [ "$DRY" -eq 1 ] && say "merge keys add-only from: ${FRAGS[*]}"
 if [ "$DRY" -eq 0 ]; then

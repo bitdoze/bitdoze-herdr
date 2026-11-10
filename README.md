@@ -12,11 +12,11 @@ Each package is a folder shaped like the Herdr app home
 
 | Package | What it is | |
 |---|---|---|
-| [`layouts/abyss/`](./layouts/abyss/) | Layout + theme + chrome mods (sidebar, pill tabs, pane cards, status bar, floating bot dock); bundles generated copies of the herd-* mods | ![abyss](./layouts/abyss/preview.png) |
-| [`mods/herd-tasks/`](./mods/herd-tasks/) | Task board with Needs you/Ready/Working/Queued/Done sections; every task is a real named tab, optionally in a git worktree | ![tasks](./mods/herd-tasks/preview.png) |
-| [`mods/herd-bots/`](./mods/herd-bots/) | Persona bots: card list + ask dialog + floating dock + shared Rooms with a live feed | ![bots](./mods/herd-bots/preview.png) |
-| [`mods/herd-usage/`](./mods/herd-usage/) | Token usage per agent CLI with a 30-day chart, read from each CLI's own local records | ![usage](./mods/herd-usage/preview.png) |
-| [`mods/herd-ops/`](./mods/herd-ops/) | Sites + machines launcher: one-click spaces and runbook terminals | ![ops](./mods/herd-ops/preview.png) |
+| [`abyss/`](./abyss/) | Layout + theme + chrome mods (sidebar, pill tabs, pane cards, status bar, floating bot dock); bundles generated copies of the herd-* mods | ![abyss](./abyss/preview.png) |
+| [`herd-tasks/`](./herd-tasks/) | Task board with Needs you/Ready/Working/Queued/Done sections; every task is a real named tab, optionally in a git worktree | ![tasks](./herd-tasks/preview.png) |
+| [`herd-bots/`](./herd-bots/) | Persona bots: card list + ask dialog + floating dock + shared Rooms with a live feed | ![bots](./herd-bots/preview.png) |
+| [`herd-usage/`](./herd-usage/) | Token usage per agent CLI with a 30-day chart, read from each CLI's own local records | ![usage](./herd-usage/preview.png) |
+| [`herd-ops/`](./herd-ops/) | Sites + machines launcher: one-click spaces and runbook terminals | ![ops](./herd-ops/preview.png) |
 | [`third_party/vitals/`](./third_party/vitals/) | Vendored `mrolafsson/herdr-vitals` machine monitor — upstream, not ours | |
 
 ## Install
@@ -71,10 +71,11 @@ Skip it with `./install.sh --no-vitals`.
 ## Your data vs. shipped files
 
 - Your config lives in the app home and is never touched by the repo:
-  `mods/herd-bots/bots.json` (personas), `mods/herd-ops/sites.json`
-  (sites), `mods/herd-tasks/tasks.json` (agent/model config), and your
-  `keys.json`. The mods create them from the shipped `*.default.json`
-  on first edit; the installer merges keys add-only.
+  `~/.config/herdr-app/mods/herd-bots/bots.json` (personas),
+  `mods/herd-ops/sites.json` (sites), `mods/herd-tasks/tasks.json`
+  (agent/model config), and your `keys.json`. The mods create them from
+  the shipped `*.default.json` on first edit; the installer merges keys
+  add-only.
 - The repo ships code, defaults and docs only — no personal data, no
   real site list, no tasks, no bots.
 - Escape hatch if anything wedges: `ctrl-alt-shift-escape` resets
@@ -82,8 +83,8 @@ Skip it with `./install.sh --no-vitals`.
 
 ## Development
 
-- `scripts/sync.sh` regenerates `layouts/abyss/mods/herd-*` from the
-  canonical `mods/*/mods/*/` sources; `--check` reports drift.
+- `scripts/sync.sh` regenerates `abyss/mods/herd-*` from the
+  canonical `herd-*/mods/*/` sources; `--check` reports drift.
 - `scripts/check.sh` is the one verification gate: sync drift, JSON,
   Python and shell syntax, unit tests, `herdr-app check`, and a
   personal-data scan.
